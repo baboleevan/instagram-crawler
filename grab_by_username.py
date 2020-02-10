@@ -12,7 +12,7 @@ from inscrawler import InsCrawler
 from inscrawler.settings import override_settings
 from inscrawler.settings import prepare_override_settings
 
-username = 'dlwlrma'
+username = 'daraxxi'
 number = 200
 
 target_path = 'result_username'
@@ -39,7 +39,6 @@ df = pd.DataFrame(columns=['key', 'caption', 'img_url', 'likes'])
 for result in results:
   # key, captions, img_urls, likes
   for img_url, caption in zip(result['img_urls'], result['captions']):
-    print(caption)
     if ('1 person' in caption and 'closeup' in caption) or ('사람 1명' in caption and '근접 촬영' in caption):
       parsed = urlparse(img_url)
       filename = parsed.path.split('/')[-1]
