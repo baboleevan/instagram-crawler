@@ -13,7 +13,7 @@ from inscrawler.settings import override_settings
 from inscrawler.settings import prepare_override_settings
 
 username = 'taeyeon_ss'
-number = 10
+number = 999
 
 target_path = 'result_username'
 debug = False
