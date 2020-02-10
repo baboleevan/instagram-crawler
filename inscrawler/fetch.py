@@ -41,12 +41,14 @@ def fetch_datetime(browser, dict_post):
 
 def fetch_imgs(browser, dict_post):
     img_urls = set()
+    captions = []
     while True:
         ele_imgs = browser.find("._97aPb img", waittime=10)
 
         if isinstance(ele_imgs, list):
             for ele_img in ele_imgs:
                 img_urls.add(ele_img.get_attribute("src"))
+                captions.append(ele_img.get_attribute("alt"))
         else:
             break
 
@@ -59,6 +61,7 @@ def fetch_imgs(browser, dict_post):
             break
 
     dict_post["img_urls"] = list(img_urls)
+    dict_post["captions"] = captions
 
 def fetch_likes_plays(browser, dict_post):
     if not settings.fetch_likes_plays:

@@ -213,7 +213,7 @@ class InsCrawler(Logging):
                 fetch_imgs(browser, dict_post)
                 fetch_likes_plays(browser, dict_post)
                 fetch_likers(browser, dict_post)
-                fetch_caption(browser, dict_post)
+                # fetch_caption(browser, dict_post)
                 fetch_comments(browser, dict_post)
 
             except RetryException:
