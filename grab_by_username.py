@@ -12,11 +12,11 @@ from inscrawler import InsCrawler
 from inscrawler.settings import override_settings
 from inscrawler.settings import prepare_override_settings
 
-username = 'taeyeon_ss'
-number = 999
+username = 'dlwlrma'
+number = 200
 
 target_path = 'result_username'
-debug = False
+debug = True
 
 current_timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
 
@@ -24,21 +24,23 @@ target_img_path = os.path.join(target_path, '%s_%s' % (username, current_timesta
 output_filename = '%s_%s.csv' % (username, current_timestamp)
 output_path = os.path.join(target_path, output_filename)
 
-os.makedirs(target_path, exist_ok=True)
-os.makedirs(target_img_path, exist_ok=True)
-
 ins_crawler = InsCrawler(has_screen=debug)
 
+ins_crawler.login()
 results = ins_crawler.get_user_posts(username, number, detail=True)
 
 print('[*] %d results' % len(results))
+
+os.makedirs(target_path, exist_ok=True)
+os.makedirs(target_img_path, exist_ok=True)
 
 df = pd.DataFrame(columns=['key', 'caption', 'img_url', 'likes'])
 
 for result in results:
   # key, captions, img_urls, likes
   for img_url, caption in zip(result['img_urls'], result['captions']):
-    if '1 person' in caption and 'closeup' in caption:
+    print(caption)
+    if ('1 person' in caption and 'closeup' in caption) or ('사람 1명' in caption and '근접 촬영' in caption):
       parsed = urlparse(img_url)
       filename = parsed.path.split('/')[-1]
       result['filename'] = filename
