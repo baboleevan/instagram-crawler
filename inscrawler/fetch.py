@@ -1,5 +1,7 @@
 import re
 from time import sleep
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.by import By
 
 from .settings import settings
 
@@ -41,14 +43,17 @@ def fetch_datetime(browser, dict_post):
 
 def fetch_imgs(browser, dict_post):
     img_urls = set()
-    captions = []
+    captions = set()
     while True:
         ele_imgs = browser.find("._97aPb img", waittime=10)
 
         if isinstance(ele_imgs, list):
             for ele_img in ele_imgs:
-                img_urls.add(ele_img.get_attribute("src"))
-                captions.append(ele_img.get_attribute("alt"))
+                src = ele_img.get_attribute("src")
+                alt = ele_img.get_attribute("alt")
+
+                img_urls.add(src)
+                captions.add('%s_%s' % (alt, src))
         else:
             break
 
@@ -56,12 +61,12 @@ def fetch_imgs(browser, dict_post):
 
         if next_photo_btn:
             next_photo_btn.click()
-            sleep(0.3)
+            sleep(1.0)
         else:
             break
 
     dict_post["img_urls"] = list(img_urls)
-    dict_post["captions"] = captions
+    dict_post["captions"] = list(captions)
 
 def fetch_likes_plays(browser, dict_post):
     if not settings.fetch_likes_plays:

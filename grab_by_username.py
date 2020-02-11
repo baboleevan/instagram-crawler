@@ -39,7 +39,7 @@ df = pd.DataFrame(columns=['key', 'caption', 'img_url', 'likes'])
 for result in results:
   # key, captions, img_urls, likes
   for img_url, caption in zip(result['img_urls'], result['captions']):
-    if ('1 person' in caption and 'closeup' in caption) or ('사람 1명' in caption and '근접 촬영' in caption):
+    if caption is not None and (('1 person' in caption and 'closeup' in caption) or ('사람 1명' in caption and '근접 촬영' in caption)):
       parsed = urlparse(img_url)
       filename = parsed.path.split('/')[-1]
       result['filename'] = filename
