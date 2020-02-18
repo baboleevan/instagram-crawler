@@ -61,7 +61,7 @@ def fetch_imgs(browser, dict_post):
 
         if next_photo_btn:
             next_photo_btn.click()
-            sleep(1.0)
+            sleep(0.8)
         else:
             break
 

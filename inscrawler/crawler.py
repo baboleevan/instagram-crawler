@@ -240,7 +240,7 @@ class InsCrawler(Logging):
             dict_posts[browser.current_url] = dict_post
 
             pbar.update(1)
-            left_arrow = browser.find_one(".HBoOv")
+            left_arrow = browser.find_one("._65Bje")
             if left_arrow:
                 left_arrow.click()
 

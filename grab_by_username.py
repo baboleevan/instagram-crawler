@@ -12,45 +12,54 @@ from inscrawler import InsCrawler
 from inscrawler.settings import override_settings
 from inscrawler.settings import prepare_override_settings
 
-username = 'daraxxi'
 number = 200
 
-target_path = 'result_username'
-debug = True
+usernames = pd.read_csv('usernames.txt', header=None, names=['name'])
+print('[*] %d users' % (len(usernames)))
 
-current_timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+for i, username in usernames.iterrows():
+  username = username['name']
+  print(username)
 
-target_img_path = os.path.join(target_path, '%s_%s' % (username, current_timestamp))
-output_filename = '%s_%s.csv' % (username, current_timestamp)
-output_path = os.path.join(target_path, output_filename)
+  target_path = 'result_username'
+  debug = True
 
-ins_crawler = InsCrawler(has_screen=debug)
+  current_timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
 
-ins_crawler.login()
-results = ins_crawler.get_user_posts(username, number, detail=True)
+  target_img_path = os.path.join(target_path, '%s_%s' % (username, current_timestamp))
+  output_filename = '%s_%s.csv' % (username, current_timestamp)
+  output_path = os.path.join(target_path, output_filename)
 
-print('[*] %d results' % len(results))
+  ins_crawler = InsCrawler(has_screen=debug)
 
-os.makedirs(target_path, exist_ok=True)
-os.makedirs(target_img_path, exist_ok=True)
+  ins_crawler.login()
+  results = ins_crawler.get_user_posts(username, number, detail=True)
 
-df = pd.DataFrame(columns=['key', 'caption', 'img_url', 'likes'])
+  print('[*] %d results' % len(results))
 
-for result in results:
-  # key, captions, img_urls, likes
-  for img_url, caption in zip(result['img_urls'], result['captions']):
-    if caption is not None and (('1 person' in caption and 'closeup' in caption) or ('사람 1명' in caption and '근접 촬영' in caption)):
-      parsed = urlparse(img_url)
-      filename = parsed.path.split('/')[-1]
-      result['filename'] = filename
-      result['img_url'] = img_url
-      result['caption'] = caption
+  os.makedirs(target_path, exist_ok=True)
+  os.makedirs(target_img_path, exist_ok=True)
 
-      urllib.request.urlretrieve(img_url, os.path.join(target_img_path, filename))
+  df = pd.DataFrame(columns=['key', 'caption', 'img_url', 'likes'])
 
-      df_result = result.copy()
-      del df_result['img_urls'], df_result['captions']
+  for result in results:
+    # key, captions, img_urls, likes
+    for img_url, caption in zip(result['img_urls'], result['captions']):
+      if caption is not None and (('1 person' in caption and 'closeup' in caption) or ('사람 1명' in caption and '근접 촬영' in caption)):
+        if img_url is None:
+          continue
 
-      df = df.append(df_result, ignore_index=True)
+        parsed = urlparse(img_url)
+        filename = parsed.path.split('/')[-1]
+        result['filename'] = filename
+        result['img_url'] = img_url
+        result['caption'] = caption
 
-df.to_csv(output_path, index=False)
+        urllib.request.urlretrieve(img_url, os.path.join(target_img_path, filename))
+
+        df_result = result.copy()
+        del df_result['img_urls'], df_result['captions']
+
+        df = df.append(df_result, ignore_index=True)
+
+  df.to_csv(output_path, index=False)
